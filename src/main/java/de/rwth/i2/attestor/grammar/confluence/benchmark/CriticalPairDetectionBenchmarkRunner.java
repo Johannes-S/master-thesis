@@ -1,5 +1,6 @@
 package de.rwth.i2.attestor.grammar.confluence.benchmark;
 
+import de.rwth.i2.attestor.grammar.GrammarRuleOriginal;
 import de.rwth.i2.attestor.grammar.NamedGrammar;
 import de.rwth.i2.attestor.grammar.confluence.CriticalPair;
 import de.rwth.i2.attestor.grammar.confluence.CriticalPairFinder;
@@ -30,12 +31,28 @@ public class CriticalPairDetectionBenchmarkRunner {
             "SLList"
     };
 
+    private static int getNumberRules(NamedGrammar grammar) {
+        int rules = 0;
+        for (GrammarRuleOriginal originalRule : grammar.getOriginalGrammarRules()) {
+            rules += 1 + originalRule.getCollapsedRules().size();
+        }
+        if (rules != grammar.getNumberActivatedRules()) {
+            throw new RuntimeException("Incorecct number rules");
+        }
+        return rules;
+    }
+
     static JSONArray runAllCriticalPairDetection() {
         JSONArray result = new JSONArray();
 
         for (String grammarName : grammarNames) {
             try {
                 NamedGrammar grammar = BenchmarkRunner.getSeparationLogicNamedGrammar(grammarName);
+                System.out.println(grammarName + " & " +
+                        getNumberRules(grammar) +  " & " +
+                        grammar.maxNumberExternalNodes() + " & " +
+                        grammar.maxNumberNodes() + " & " +
+                        grammar.maxNumberEdges() + "\\\\");
                 result.put(runBenchmarkForGrammar(grammar));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -44,10 +61,17 @@ public class CriticalPairDetectionBenchmarkRunner {
 
         for (String grammarName : defaultGrammars) {
             NamedGrammar grammar = ConfluenceTool.parseGrammar(grammarName);
+            System.out.println(grammarName + " & " +
+                    getNumberRules(grammar) +  " & " +
+                    grammar.maxNumberExternalNodes() + " & " +
+                    grammar.maxNumberNodes() + " & " +
+                    grammar.maxNumberEdges() + "\\\\");
             result.put(runBenchmarkForGrammar(grammar));
         }
         return result;
     }
+
+
 
     static JSONObject runBenchmarkForGrammar(NamedGrammar grammar) {
         CriticalPairFinder criticalPairFinder = new CriticalPairFinder(grammar);

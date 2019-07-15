@@ -3,11 +3,14 @@ package de.rwth.i2.attestor.grammar;
 import de.rwth.i2.attestor.grammar.canonicalization.*;
 import de.rwth.i2.attestor.grammar.canonicalization.defaultGrammar.DefaultCanonicalizationHelper;
 import de.rwth.i2.attestor.grammar.confluence.completion.GeneratedNonterminal;
+import de.rwth.i2.attestor.grammar.confluence.jointMorphism.EdgeGraphElement;
+import de.rwth.i2.attestor.grammar.confluence.jointMorphism.EdgeOverlapping;
 import de.rwth.i2.attestor.grammar.util.ExternalNodesPartitioner;
 import de.rwth.i2.attestor.graph.Nonterminal;
 import de.rwth.i2.attestor.graph.heap.HeapConfiguration;
 import de.rwth.i2.attestor.graph.heap.HeapConfigurationBuilder;
 import de.rwth.i2.attestor.graph.heap.matching.AbstractMatchingChecker;
+import de.rwth.i2.attestor.graph.morphism.Graph;
 import de.rwth.i2.attestor.graph.morphism.MorphismOptions;
 import gnu.trove.list.array.TIntArrayList;
 
@@ -29,6 +32,31 @@ public class NamedGrammar implements GrammarInterface {
 
     private CanonicalizationStrategy canonicalizationStrategy;
     private EmbeddingCheckerProvider embeddingCheckerProvider;
+
+    public int maxNumberNodes() {
+        int max = 0;
+        for (GrammarRuleOriginal rule : originalRules) {
+            max = Math.max(rule.getHeapConfiguration().nodes().size(), max);
+        }
+        return max;
+    }
+
+    public int maxNumberEdges() {
+        int max = 0;
+        for (GrammarRuleOriginal rule : originalRules) {
+            max = Math.max(EdgeGraphElement.getEdgesOfGraph((Graph) rule.getHeapConfiguration()).size(), max);
+        }
+        return max;
+
+    }
+
+    public int maxNumberExternalNodes() {
+        int max = 0;
+        for (GrammarRuleOriginal rule : originalRules) {
+            max = Math.max(rule.getHeapConfiguration().externalNodes().size(), max);
+        }
+        return max;
+    }
 
     private NamedGrammar(String grammarName, List<GrammarRuleOriginal> newOriginalRules, Collection<HeapConfiguration> abstractionBlockingHeapConfigurations) {
         // Check that the original rule indices are in increasing order TODO: Can we just remove this sanity check?
