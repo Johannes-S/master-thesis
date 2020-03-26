@@ -2,7 +2,6 @@ package de.rwth.i2.attestor.grammar;
 
 import de.rwth.i2.attestor.grammar.canonicalization.*;
 import de.rwth.i2.attestor.grammar.canonicalization.defaultGrammar.DefaultCanonicalizationHelper;
-import de.rwth.i2.attestor.grammar.confluence.completion.GeneratedNonterminal;
 import de.rwth.i2.attestor.grammar.util.ExternalNodesPartitioner;
 import de.rwth.i2.attestor.graph.Nonterminal;
 import de.rwth.i2.attestor.graph.heap.HeapConfiguration;
@@ -218,34 +217,6 @@ public class NamedGrammar implements GrammarInterface {
 
     public Collection<HeapConfiguration> getAbstractionBlockingHeapConfigurations() {
         return Collections.unmodifiableCollection(abstractionBlockingHeapConfigurations);
-    }
-
-    /**
-     * @param nt1 The nonterminal that should be merged (must have same rank as nt2)
-     * @param nt2 All occurences of this nonterminal in the rules will be changed to nt1
-     * @return A new named grammar with nt1 and nt2 merged
-     */
-    public NamedGrammar joinGeneratedNonterminals(GeneratedNonterminal nt1, GeneratedNonterminal nt2) {
-        List<GrammarRuleOriginal> newOriginalRules = new ArrayList<>();
-        for (GrammarRuleOriginal rule : originalRules) {
-            if (rule.getRuleStatus() == GrammarRule.RuleStatus.CONFLUENCE_GENERATED) {
-                Nonterminal newNt = rule.getNonterminal();
-                if (nt2.equals(newNt)) {
-                    newNt = nt1;
-                }
-                HeapConfiguration newHc = replaceNonterminal(rule.getHeapConfiguration(), nt1, nt2);
-                newOriginalRules.add(new GrammarRuleOriginal(grammarName, newNt, newHc, rule.getOriginalRuleIdx()));
-            } else {
-                newOriginalRules.add(rule);
-            }
-        }
-
-        Collection<HeapConfiguration> newAbstractionBlockingHeapConfigurations = new ArrayList<>();
-        for (HeapConfiguration hc : abstractionBlockingHeapConfigurations) {
-            newAbstractionBlockingHeapConfigurations.add(replaceNonterminal(hc, nt1, nt2));
-        }
-
-        return new NamedGrammar(grammarName, newOriginalRules, newAbstractionBlockingHeapConfigurations);
     }
 
     /**

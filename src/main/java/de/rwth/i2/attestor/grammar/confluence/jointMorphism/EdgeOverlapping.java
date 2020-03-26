@@ -1,6 +1,5 @@
 package de.rwth.i2.attestor.grammar.confluence.jointMorphism;
 
-import de.rwth.i2.attestor.grammar.confluence.benchmark.OverlappingStatisticCollector;
 import de.rwth.i2.attestor.graph.digraph.NodeLabel;
 import de.rwth.i2.attestor.graph.morphism.Graph;
 import de.rwth.i2.attestor.types.Type;
@@ -23,8 +22,8 @@ public class EdgeOverlapping extends Overlapping<EdgeGraphElement> {
      * Returns a new empty Overlapping
      */
     private EdgeOverlapping(HeapConfigurationContext context, Collection<EdgeGraphElement> hc1Remaining,
-                            Collection<EdgeGraphElement> hc2Remaining, OverlappingStatisticCollector statisticCollector) {
-        super(context, hc1Remaining, hc2Remaining, statisticCollector);
+                            Collection<EdgeGraphElement> hc2Remaining) {
+        super(context, hc1Remaining, hc2Remaining);
         // Initialize empty node equivalences
         this.mapNodeHc1ToHc2 = new HashMap<>();
         this.mapNodeHc2ToHc1 = new HashMap<>();
@@ -258,17 +257,13 @@ public class EdgeOverlapping extends Overlapping<EdgeGraphElement> {
      *
      * @param context This context contains the two HeapConfiguration objects for the overlapping.
      */
-    public static EdgeOverlapping getEdgeOverlapping(HeapConfigurationContext context, OverlappingStatisticCollector statisticCollector) {
+    public static EdgeOverlapping getEdgeOverlapping(HeapConfigurationContext context) {
         // Extract edges from the graphs
         Collection<EdgeGraphElement> edgesGraph1, edgesGraph2;
         edgesGraph1 = EdgeGraphElement.getEdgesOfGraph(context.getGraph1());
         edgesGraph2 = EdgeGraphElement.getEdgesOfGraph(context.getGraph2());
 
-        return new EdgeOverlapping(context, edgesGraph1, edgesGraph2, statisticCollector);
-    }
-
-    public static EdgeOverlapping getEdgeOverlapping(HeapConfigurationContext context) {
-        return getEdgeOverlapping(context, null);
+        return new EdgeOverlapping(context, edgesGraph1, edgesGraph2);
     }
 
 }

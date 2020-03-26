@@ -1,6 +1,5 @@
 package de.rwth.i2.attestor.grammar.confluence.jointMorphism;
 
-import de.rwth.i2.attestor.grammar.confluence.benchmark.OverlappingStatisticCollector;
 import de.rwth.i2.attestor.util.Pair;
 
 import java.util.*;
@@ -28,34 +27,28 @@ public abstract class Overlapping<Element extends GraphElement> implements Itera
     private final Pair<Element, Element> lastAddedEquivalence;
     private final Map<Element, Element> mapHC1toHC2, mapHC2toHC1;
     private final HeapConfigurationContext context;
-    private final OverlappingStatisticCollector statisticCollector;
-    private final int level;
 
     Overlapping(HeapConfigurationContext context, Collection<Element> hc1Remaining,
                           Collection<Element> hc2Remaining, Map<Element, Element> mapHC1toHC2,
-                          Map<Element, Element> mapHC2toHC1, OverlappingStatisticCollector statisticCollector, int level) {
+                          Map<Element, Element> mapHC2toHC1) {
         this.context = context;
         this.hc1Remaining = new TreeSet<>(hc1Remaining);
         this.hc2Remaining = new TreeSet<>(hc2Remaining);
         this.mapHC1toHC2 = mapHC1toHC2;
         this.mapHC2toHC1 = mapHC2toHC1;
         this.lastAddedEquivalence = null;
-        this.statisticCollector = statisticCollector;
-        this.level = level;
     }
 
     /**
      * Initializes an overlapping where all Elements are disjoint
      */
-    Overlapping(HeapConfigurationContext context, Collection<Element> hc1, Collection<Element> hc2, OverlappingStatisticCollector statisticCollector) {
+    Overlapping(HeapConfigurationContext context, Collection<Element> hc1, Collection<Element> hc2) {
         this.context = context;
         hc1Remaining = new TreeSet<>(hc1);
         hc2Remaining = new TreeSet<>(hc2);
         lastAddedEquivalence = null;
         mapHC1toHC2 =  new HashMap<>();
         mapHC2toHC1 =  new HashMap<>();
-        this.statisticCollector = statisticCollector;
-        this.level = 0;
     }
 
 
@@ -70,8 +63,6 @@ public abstract class Overlapping<Element extends GraphElement> implements Itera
         mapHC1toHC2.put(newEquivalence.first(), newEquivalence.second());
         mapHC2toHC1 =  new HashMap<>(oldOverlapping.mapHC2toHC1);
         mapHC2toHC1.put(newEquivalence.second(), newEquivalence.first());
-        this.statisticCollector = oldOverlapping.statisticCollector;
-        this.level = oldOverlapping.level + 1;
     }
 
     /**
@@ -146,9 +137,6 @@ public abstract class Overlapping<Element extends GraphElement> implements Itera
         while (nextNodeEquivalence != null) {
             if (this.isNextPairCompatible(nextNodeEquivalence)) {
                 result.add(getOverlapping(nextNodeEquivalence));
-            } else if (statisticCollector != null) {
-                // Keep a statistic on the level at which we were able to prune
-                statisticCollector.logPruning(this.getLevel());
             }
             nextNodeEquivalence = getNextEquivalence(nextNodeEquivalence);
         }
@@ -193,9 +181,5 @@ public abstract class Overlapping<Element extends GraphElement> implements Itera
      * Returns the Overlapping if the newPair is added to the equivalences of this object.
      */
     abstract Overlapping<Element> getOverlapping(Pair<Element, Element> newPair);
-
-    public int getLevel() {
-        return level;
-    }
 
 }

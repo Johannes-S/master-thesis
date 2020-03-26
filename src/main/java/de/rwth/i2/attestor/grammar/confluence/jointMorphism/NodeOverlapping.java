@@ -1,6 +1,5 @@
 package de.rwth.i2.attestor.grammar.confluence.jointMorphism;
 
-import de.rwth.i2.attestor.grammar.confluence.benchmark.OverlappingStatisticCollector;
 import de.rwth.i2.attestor.graph.morphism.Graph;
 import de.rwth.i2.attestor.types.Type;
 import de.rwth.i2.attestor.util.Pair;
@@ -16,9 +15,8 @@ public class NodeOverlapping extends Overlapping<NodeGraphElement> {
      */
     private NodeOverlapping(HeapConfigurationContext context, Collection<NodeGraphElement> hc1Remaining,
                             Collection<NodeGraphElement> hc2Remaining, Map<NodeGraphElement, NodeGraphElement> mapHc1toHc2,
-                            Map<NodeGraphElement, NodeGraphElement> mapHc2toHc1, OverlappingStatisticCollector statisticCollector,
-                            boolean isIndependent, int level) {
-        super(context, hc1Remaining, hc2Remaining, mapHc1toHc2, mapHc2toHc1, statisticCollector, level);
+                            Map<NodeGraphElement, NodeGraphElement> mapHc2toHc1, boolean isIndependent) {
+        super(context, hc1Remaining, hc2Remaining, mapHc1toHc2, mapHc2toHc1);
         this.isIndependent = isIndependent;
     }
 
@@ -99,7 +97,7 @@ public class NodeOverlapping extends Overlapping<NodeGraphElement> {
         return new NodeOverlapping(this, newPair);
     }
 
-    public static NodeOverlapping getNodeOverlapping(EdgeOverlapping edgeOverlapping, OverlappingStatisticCollector statisticCollector) {
+    public static NodeOverlapping getNodeOverlapping(EdgeOverlapping edgeOverlapping) {
         Collection<NodeGraphElement> hc1Remaining, hc2Remaining;
         Map<NodeGraphElement, NodeGraphElement> mapHc1toHc2, mapHc2toHc1;
 
@@ -115,11 +113,7 @@ public class NodeOverlapping extends Overlapping<NodeGraphElement> {
         boolean isIndependent = edgeOverlapping.isEmpty();
 
         // Return the NodeOverlapping
-        return new NodeOverlapping(edgeOverlapping.getContext(), hc1Remaining, hc2Remaining, mapHc1toHc2, mapHc2toHc1, statisticCollector, isIndependent, edgeOverlapping.getLevel()+1);
-    }
-
-    public static NodeOverlapping getNodeOverlapping(EdgeOverlapping edgeOverlapping) {
-        return getNodeOverlapping(edgeOverlapping, null);
+        return new NodeOverlapping(edgeOverlapping.getContext(), hc1Remaining, hc2Remaining, mapHc1toHc2, mapHc2toHc1, isIndependent);
     }
 
     /**
