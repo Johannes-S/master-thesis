@@ -9,43 +9,16 @@ public class GrammarRuleCollapsed implements GrammarRule {
     private final GrammarRuleOriginal originalRule;  // Note: this is does not have to be same rule object that contains this rule
     private final CollapsedHeapConfiguration collapsedHeapConfiguration;
     private final int collapsedRuleIdx;
-    private final RuleStatus status;
 
-    public GrammarRuleCollapsed(GrammarRuleOriginal originalRule, int collapsedRuleIdx, CollapsedHeapConfiguration cHC, RuleStatus status) {
-        if (status == RuleStatus.CONFLUENCE_GENERATED) {
-            throw new IllegalArgumentException("Collapsed rules cannot have state CONFLUENCE_GENERATED");
-        }
+    public GrammarRuleCollapsed(GrammarRuleOriginal originalRule, int collapsedRuleIdx, CollapsedHeapConfiguration cHC) {
         this.originalRule = originalRule;
         this.collapsedHeapConfiguration = cHC;
         this.collapsedRuleIdx = collapsedRuleIdx;
-        this.status = status;
-    }
-
-    GrammarRuleCollapsed flipActivation() {
-        RuleStatus newStatus;
-        switch (status) {
-            case ACTIVE:  // Rule should be inactivated
-                newStatus = RuleStatus.INACTIVE;
-                break;
-            case INACTIVE:  // Rule should be activated
-                newStatus = RuleStatus.ACTIVE;
-                break;
-            case CONFLUENCE_GENERATED:
-                throw new IllegalStateException("Collapsed rules should not be CONFLUENCE_GENERATED");
-            default:
-                throw new IllegalStateException("Invalid status");
-        }
-        return new GrammarRuleCollapsed(originalRule, collapsedRuleIdx, collapsedHeapConfiguration, newStatus);
     }
 
     @Override
     public String getRuleIdentifier() {
         return originalRule.getRuleIdentifier() + "." + Integer.toString(getCollapsedRuleIdx() + 1);
-    }
-
-    @Override
-    public RuleStatus getRuleStatus() {
-        return status;
     }
 
     @Override
@@ -84,8 +57,7 @@ public class GrammarRuleCollapsed implements GrammarRule {
             GrammarRuleCollapsed otherRule = (GrammarRuleCollapsed) o;
             return getGrammarName() == otherRule.getGrammarName()
                     && getOriginalRuleIdx() == otherRule.getOriginalRuleIdx()
-                    && getCollapsedRuleIdx() == otherRule.getCollapsedRuleIdx()
-                    && getRuleStatus() == otherRule.getRuleStatus();
+                    && getCollapsedRuleIdx() == otherRule.getCollapsedRuleIdx();
         } else {
             return false;
         }

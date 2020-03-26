@@ -7,18 +7,6 @@ import de.rwth.i2.attestor.graph.heap.HeapConfiguration;
 import java.util.Collection;
 
 public interface GrammarRule {
-
-    enum RuleStatus {
-        ACTIVE,  // The rule originates from a handwritten rule and can be used for abstraction
-        INACTIVE,  // The rule originates from a handwritten rule and cannot be used for abstraction
-        CONFLUENCE_GENERATED  // The rule was generated to achieve confluence and can be used for abstraction (those rules are never deactivated, but just deleted)
-    }
-
-    /**
-     * @return true if this rule should only be used for concretization and not for abstraction
-     */
-    RuleStatus getRuleStatus();
-
     Nonterminal getNonterminal();
 
     HeapConfiguration getHeapConfiguration();
@@ -33,17 +21,6 @@ public interface GrammarRule {
     String getRuleIdentifier();
 
     int getOriginalRuleIdx();
-
-    default boolean isRuleActive() {
-        switch (getRuleStatus()) {
-            case ACTIVE:
-            case CONFLUENCE_GENERATED:
-                return true;
-            case INACTIVE:
-                return false;
-        }
-        throw new IllegalStateException();
-    }
 
     default Collection<SelectorLabel> getLocalOutgoingSelectorLabels(int tentacle) {
         HeapConfiguration hc = getCollapsedHeapConfiguration().getOriginal();
