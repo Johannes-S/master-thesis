@@ -154,6 +154,17 @@ public class CommandLineReader {
                         .build()
         );
 
+        commandLineOptions.addOption(
+                Option.builder("cc")
+                        .longOpt("confluence-check")
+                        .desc("Checks the grammar for confluence. Shows the number of critical " +
+                                "pairs in the log output. The analysis is still executed in case " +
+                                "the grammar is not confluent.")
+                        .build()
+        );
+
+
+
     }
 
     private void setupInputOptions() {
@@ -490,6 +501,18 @@ public class CommandLineReader {
                                 "If the generated contracts should be reused for another analysis, " +
                                 "i.e. they should be supplied using --contract (link), use the option " +
                                 "--save-contracts instead.")
+                        .build()
+        );
+
+        commandLineOptions.addOption(
+                Option.builder("ec")
+                        .longOpt("export-confluence")
+                        .hasArg()
+                        .argName("path")
+                        .desc("Exports a report of the confluence check that shows the critical pairs and their joinability. " +
+                                "The confluence check must be enabled with the -cc flag. " +
+                                "The report is written to a directory ROOT_PATH/<path>, where ROOT_PATH is " +
+                                "the path determined by --root-path. ")
                         .build()
         );
 

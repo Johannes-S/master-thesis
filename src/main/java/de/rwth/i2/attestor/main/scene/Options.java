@@ -54,6 +54,8 @@ public class Options {
 
     private int maxHeap = 50;
 
+    private boolean confluenceCheckEnabled = false;
+
     // -----------------------------------------------------------------------------------
 
     public void setPostProcessingEnabled(boolean enabled) {
@@ -120,6 +122,10 @@ public class Options {
         this.maxHeap = maxHeap;
     }
 
+    public void setConfluenceCheckEnabled(boolean confluenceCheckEnabled) {
+        this.confluenceCheckEnabled = confluenceCheckEnabled;
+    }
+
 
     public int getMaxStateSpace() {
         return maxStateSpace;
@@ -180,5 +186,9 @@ public class Options {
 
     public boolean isAdmissibleAbstractionEnabled() {
         return admissibleAbstractionEnabled;
+    }
+
+    public boolean isConfluenceCheckEnabled() {
+        return confluenceCheckEnabled;
     }
 }

@@ -91,6 +91,9 @@ public class CommandLinePhase extends AbstractPhase
             case "root-path":
                 // was already set before
                 break;
+            case "cc":
+                setConfluenceCheck(option);
+                break;
             case "class":
                 setClass(option);
                 break;
@@ -175,6 +178,9 @@ public class CommandLinePhase extends AbstractPhase
             case "export-contracts":
                 exportContracts(option);
                 break;
+            case "export-confluence":
+                exportConfluence(option);
+                break;
             case "quiet":
                 quiet();
                 break;
@@ -199,6 +205,11 @@ public class CommandLinePhase extends AbstractPhase
         String description = option.getValue();
         logger.info("description: " + description);
         inputSettings.setDescription(description);
+    }
+
+    private void setConfluenceCheck(Option option){
+        logger.info("enabled confluence check");
+        scene().options().setConfluenceCheckEnabled(true);
     }
 
     private void setClass(Option option) {
@@ -415,6 +426,12 @@ public class CommandLinePhase extends AbstractPhase
         String path = option.getValue();
         logger.info("contracts will be exported to " + path);
         outputSettings.setExportContractsPath(path);
+    }
+
+    private void exportConfluence(Option option) {
+        String path = option.getValue();
+        logger.info("confluence report will be exported to " + path);
+        outputSettings.setConfluenceReportPath(path);
     }
 
     private void quiet() {

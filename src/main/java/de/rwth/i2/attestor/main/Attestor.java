@@ -1,6 +1,7 @@
 package de.rwth.i2.attestor.main;
 
 import de.rwth.i2.attestor.phases.commandLineInterface.CommandLinePhase;
+import de.rwth.i2.attestor.phases.confluenceCheck.ConfluenceCheckPhase;
 import de.rwth.i2.attestor.phases.counterexamples.CounterexampleGenerationPhase;
 import de.rwth.i2.attestor.phases.modelChecking.ModelCheckingPhase;
 import de.rwth.i2.attestor.phases.parser.ParseContractsPhase;
@@ -49,6 +50,7 @@ public class Attestor extends AbstractAttestor {
                 .addPhase(new CommandLinePhase(scene, args))
                 .addPhase(new ParseProgramPhase(scene))
                 .addPhase(new ParseGrammarPhase(scene))
+                .addPhase(new ConfluenceCheckPhase(scene))
                 .addPhase(new ParseInputPhase(scene))
                 .addPhase(new ParseContractsPhase(scene))
                 .addPhase(new MarkingGenerationPhase(scene))
